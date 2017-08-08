@@ -1,0 +1,509 @@
+firewall {
+    all-ping enable
+    broadcast-ping disable
+    group {
+        address-group Router_IPs {
+            address 192.168.0.1
+            address 192.168.1.1
+            address 192.168.2.1
+            description ""
+        }
+        address-group unifi_devices {
+            address 192.168.0.2-192.168.0.5
+        }
+        network-group VLAN_Networks {
+            description ""
+            network 192.168.0.0/24
+            network 192.168.1.0/24
+            network 192.168.2.0/24
+        }
+    }
+    ipv6-name WANv6_IN {
+        default-action drop
+        description "WAN inbound traffic forwarded to LAN"
+        enable-default-log
+        rule 10 {
+            action accept
+            description "Allow established/related sessions"
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 15 {
+            action accept
+            description emby
+            destination {
+                port 8096
+            }
+            protocol tcp
+        }
+        rule 20 {
+            action drop
+            description "Drop invalid state"
+            state {
+                invalid enable
+            }
+        }
+    }
+    ipv6-name WANv6_LOCAL {
+        default-action drop
+        description "WAN inbound traffic to the router"
+        enable-default-log
+        rule 10 {
+            action accept
+            description "Allow established/related sessions"
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 20 {
+            action drop
+            description "Drop invalid state"
+            state {
+                invalid enable
+            }
+        }
+        rule 30 {
+            action accept
+            description "Allow IPv6 icmp"
+            protocol ipv6-icmp
+        }
+        rule 40 {
+            action accept
+            description "allow dhcpv6"
+            destination {
+                port 546
+            }
+            protocol udp
+            source {
+                port 547
+            }
+        }
+    }
+    ipv6-receive-redirects disable
+    ipv6-src-route disable
+    ip-src-route disable
+    log-martians enable
+    name VLAN_IN {
+        default-action accept
+        rule 10 {
+            action accept
+            source {
+                group {
+                    address-group Router_IPs
+                }
+            }
+        }
+        rule 15 {
+            action accept
+            destination {
+                address 192.168.1.60
+            }
+            source {
+                group {
+                    address-group unifi_devices
+                }
+            }
+        }
+        rule 16 {
+            action accept
+            destination {
+                group {
+                    address-group unifi_devices
+                }
+            }
+            log enable
+            protocol all
+            source {
+                address 192.168.1.60
+            }
+        }
+        rule 19 {
+            action accept
+            destination {
+                address 192.168.1.60
+                port 8880
+            }
+            protocol tcp_udp
+        }
+        rule 20 {
+            action drop
+            destination {
+                group {
+                    network-group VLAN_Networks
+                }
+            }
+            log enable
+            source {
+            }
+        }
+    }
+    name WAN_IN {
+        default-action drop
+        description "WAN to internal"
+        rule 10 {
+            action accept
+            description "Allow established/related"
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 20 {
+            action drop
+            description "Drop invalid state"
+            state {
+                invalid enable
+            }
+        }
+    }
+    name WAN_LOCAL {
+        default-action drop
+        description "WAN to router"
+        rule 10 {
+            action accept
+            description "Allow established/related"
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 20 {
+            action drop
+            description "Drop invalid state"
+            state {
+                invalid enable
+            }
+        }
+    }
+    receive-redirects disable
+    send-redirects enable
+    source-validation disable
+    syn-cookies enable
+}
+interfaces {
+    ethernet eth0 {
+        description room_1
+        duplex auto
+        poe {
+            output off
+        }
+        speed auto
+    }
+    ethernet eth1 {
+        description printer
+        duplex auto
+        poe {
+            output off
+        }
+        speed auto
+    }
+    ethernet eth2 {
+        description Wifi
+        duplex auto
+        poe {
+            output 24v
+        }
+        speed auto
+    }
+    ethernet eth3 {
+        description sw01
+        duplex auto
+        poe {
+            output off
+        }
+        speed auto
+    }
+    ethernet eth4 {
+        description Wifi
+        duplex auto
+        poe {
+            output 24v
+        }
+        speed auto
+    }
+    ethernet eth5 {
+        address dhcp
+        description Internet
+        dhcpv6-pd {
+            pd 0 {
+                interface switch0.2 {
+                    host-address ::1
+                    prefix-id :16
+                    service slaac
+                }
+                prefix-length /48
+            }
+            rapid-commit enable
+        }
+        duplex auto
+        firewall {
+            in {
+                ipv6-name WANv6_IN
+                name WAN_IN
+            }
+            local {
+                ipv6-name WANv6_LOCAL
+                name WAN_LOCAL
+            }
+        }
+        speed auto
+    }
+    loopback lo {
+    }
+    switch switch0 {
+        description Local
+        firewall {
+            in {
+            }
+            local {
+            }
+        }
+        ipv6 {
+            dup-addr-detect-transmits 1
+        }
+        mtu 1500
+        switch-port {
+            interface eth0 {
+                vlan {
+                    pvid 1
+                    vid 2
+                    vid 8
+                }
+            }
+            interface eth1 {
+                vlan {
+                    pvid 2
+                }
+            }
+            interface eth2 {
+                vlan {
+                    pvid 1
+                    vid 2
+                    vid 8
+                }
+            }
+            interface eth3 {
+                vlan {
+                    pvid 1
+                    vid 2
+                    vid 8
+                }
+            }
+            interface eth4 {
+                vlan {
+                    pvid 1
+                    vid 2
+                    vid 8
+                }
+            }
+            vlan-aware enable
+        }
+        vif 1 {
+            address 192.168.0.1/24
+            description "mgmt network"
+            firewall {
+                in {
+                    name VLAN_IN
+                }
+            }
+            mtu 1500
+        }
+        vif 2 {
+            address 192.168.1.1/24
+            description "home network"
+            firewall {
+                in {
+                    name VLAN_IN
+                }
+                local {
+                    ipv6-name WANv6_LOCAL
+                }
+            }
+            ipv6 {
+                address {
+                    autoconf
+                }
+                dup-addr-detect-transmits 1
+            }
+            mtu 1500
+        }
+        vif 8 {
+            address 192.168.2.1/24
+            description guets
+            firewall {
+                in {
+                    name VLAN_IN
+                }
+            }
+            mtu 1500
+        }
+    }
+}
+port-forward {
+    auto-firewall enable
+    hairpin-nat enable
+    lan-interface eth0
+    lan-interface switch0.8
+    lan-interface switch0
+    lan-interface switch0.2
+    rule 1 {
+        description ssh
+        forward-to {
+            address 192.168.1.60
+            port 22
+        }
+        original-port 22
+        protocol tcp_udp
+    }
+    rule 2 {
+        description "device "
+        forward-to {
+            address 192.168.1.60
+            port 8096
+        }
+        original-port 8096
+        protocol tcp_udp
+    }
+    rule 3 {
+        description "device tls"
+        forward-to {
+            address 192.168.1.60
+            port 8920
+        }
+        original-port 8920
+        protocol tcp_udp
+    }
+    rule 4 {
+        description openvpn
+        forward-to {
+            address 192.168.1.116
+            port 1194
+        }
+        original-port 1194
+        protocol tcp_udp
+    }
+    wan-interface eth5
+}
+protocols {
+    static {
+    }
+}
+service {
+    dhcp-server {
+        disabled false
+        hostfile-update disable
+        shared-network-name Guest {
+            authoritative disable
+            subnet 192.168.2.0/24 {
+                default-router 192.168.2.1
+                dns-server 8.8.8.8
+                lease 86400
+                start 192.168.2.2 {
+                    stop 192.168.2.250
+                }
+            }
+        }
+        shared-network-name LAN {
+            authoritative enable
+            subnet 192.168.1.0/24 {
+                default-router 192.168.1.1
+                dns-server 8.8.8.8
+                dns-server 8.8.4.4
+                lease 86400
+                start 192.168.1.38 {
+                    stop 192.168.1.243
+                }
+                static-mapping device {
+                    ip-address 192.168.1.60
+                    mac-address b8:ae:ed:7b:8e:31
+                }
+                unifi-controller 192.168.1.60
+            }
+        }
+        shared-network-name mgnt {
+            authoritative disable
+            subnet 192.168.0.0/24 {
+                default-router 192.168.0.1
+                dns-server 8.8.8.8
+                dns-server 8.8.4.4
+                lease 86400
+                start 192.168.0.2 {
+                    stop 192.168.0.255
+                }
+                unifi-controller 192.168.1.60
+            }
+        }
+        use-dnsmasq disable
+    }
+    dns {
+        forwarding {
+            cache-size 150
+            listen-on switch0
+            listen-on eth0
+            listen-on eth1
+            listen-on eth2
+            listen-on eth3
+            listen-on eth4
+        }
+    }
+    gui {
+        http-port 80
+        https-port 443
+        older-ciphers enable
+    }
+    nat {
+        rule 5010 {
+            description "masquerade for WAN"
+            outbound-interface eth5
+            type masquerade
+        }
+    }
+    ssh {
+        port 222
+        protocol-version v2
+    }
+}
+system {
+    host-name ubnt
+    login {
+        user ubnt {
+            authentication {
+                encrypted-password ****************
+            }
+            level admin
+        }
+    }
+    ntp {
+        server 0.ubnt.pool.ntp.org {
+        }
+        server 1.ubnt.pool.ntp.org {
+        }
+        server 2.ubnt.pool.ntp.org {
+        }
+        server 3.ubnt.pool.ntp.org {
+        }
+    }
+    offload {
+        hwnat enable
+    }
+    syslog {
+        global {
+            facility all {
+                level notice
+            }
+            facility protocols {
+                level debug
+            }
+        }
+        host 192.168.1.116 {
+            facility all {
+                level err
+            }
+        }
+    }
+    time-zone UTC
+}
+
