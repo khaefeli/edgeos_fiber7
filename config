@@ -32,7 +32,7 @@ firewall {
         }
         rule 15 {
             action accept
-            description emby
+            description device
             destination {
                 port 8096
             }
