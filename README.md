@@ -26,9 +26,13 @@ Accept local connnections with the `icmpv6` protocol and allow internal DHCPv6 P
 Secure the networks between your VLANs (drop). But allow to access Unifi controller <> Unifi Devices and to the Router interfaces.
 
 __rule 10__ Accept `Router_IPs` of our gateway's. List should be specified under `adress-group Router_IPs`
+
 __rule 15__ Static whitelist to our Unifi controller. Specify the Unifi devices IPs (Switch, Wifi etc) under `address-group unifi_devices`
+
 __rule 16__ Opposite direction of the rule 15
+
 __rule 19__ Allow connection to the Unifi Wifi portal.
+
 __rule 20__ Drop all other connections between VLANs.
 
 ### WAN_IN
