@@ -47,7 +47,7 @@ See *WANv6_LOCAL*
 
 __eth 0__ Normal port configuration.
 
-__eth 1__ Normal port configuration.
+__eth 1__ Normal port configuration (printer).
 
 __eth 2__ Enable power-over-ethernet (PoE) for the Unifi access-point. 
 
@@ -57,8 +57,10 @@ __eth 4__ Enable power-over-ethernet (PoE) for the Unifi access-point.
 
 __eth 5__ WAN / Internet port with the SFP plugged. 
 
+Notes:
+
 * IPv4 over DHCP
-* IPv6 with DHCPv6 prefix-delegation (PD). __request your own /48 subnet from the init7 support__
+* IPv6 with DHCPv6 prefix-delegation (PD). __request your own /48 subnet from the init7 support_ :fire:	_
 * Prefix-id: add the missing 16 bits to announce a /64 to your internal network. Needed for SLAAC (Stateless Address Autoconfiguration).
 
 ### Switch
@@ -81,9 +83,9 @@ Add the gateway IPs to the virtual interface (VIF) of the VLANs.
 
 ### port-forward
 
-Some old-school port forwarding / NATing for devices and services which dont support IPv6 :(
+Some old-school port forwarding / NATing for devices and services which dont support IPv6 :cry:
 
 ## Performance
 
-Enable `offload { hwnat enable }` to boost your WAN to LAN performance to 1Gbit up/down.
+Enable `offload { hwnat enable }` to boost your WAN to LAN performance to 1Gbit up/down. :rocket:
 
