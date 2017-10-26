@@ -1,6 +1,6 @@
 # edgeos_fiber7
 Ubiquiti EdgeOS router configuration for the Swiss FTTH provider [Fiber7](https://fiber7.ch). Including VLANs (Guest, Internal, Mgmt), IPv6 and Firewall.
-i
+
 Optimized for 1Gbit WAN to LAN performance :rocket: Multiple VLANs to create a secure _#CHFreeWifi_ setup.
 
 :warning: *Warning*: dont copy/paste. It will enable power-over-ethernet and could break our network devices.
