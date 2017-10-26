@@ -25,11 +25,11 @@ Accept local connnections with the `icmpv6` protocol and allow internal DHCPv6 P
 
 Secure the networks between your VLANs (drop). But allow to access Unifi controller <> Unifi Devices and to the Router interfaces.
 
-__ rule 10 __ Accept `Router_IPs` of our gateway's. List should be specified under `adress-group Router_IPs`
-__ rule 15 __ Static whitelist to our Unifi controller. Specify the Unifi devices IPs (Switch, Wifi etc) under `address-group unifi_devices`
-__ rule 16 __ Opposite direction of the rule 15
-__ rule 19 __ Allow connection to the Unifi Wifi portal.
-__ rule 20 __ Drop all other connections between VLANs.
+__rule 10__ Accept `Router_IPs` of our gateway's. List should be specified under `adress-group Router_IPs`
+__rule 15__ Static whitelist to our Unifi controller. Specify the Unifi devices IPs (Switch, Wifi etc) under `address-group unifi_devices`
+__rule 16__ Opposite direction of the rule 15
+__rule 19__ Allow connection to the Unifi Wifi portal.
+__rule 20__ Drop all other connections between VLANs.
 
 ### WAN_IN
 
@@ -45,30 +45,30 @@ See *WANv6_LOCAL*
 
 ### Ethernet
 
-__ eth 0 __ Normal port configuration.
-__ eth 1 __ Normal port configuration.
-__ eth 2 __ Enable power-over-ethernet (Poe) for the Unifi access-point. 
-__ eth 3 __ Normal port configuration.
-__ eth 4 __ Enable power-over-ethernet (Poe) for the Unifi access-point.
-__ eth 5 __ WAN / Internet port with the SFP plugged. 
+__eth 0__ Normal port configuration.
+__eth 1__ Normal port configuration.
+__eth 2__ Enable power-over-ethernet (PoE) for the Unifi access-point. 
+__eth 3__ Normal port configuration.
+__eth 4__ Enable power-over-ethernet (PoE) for the Unifi access-point.
+__eth 5__ WAN / Internet port with the SFP plugged. 
 
 * IPv4 over DHCP
-* IPv6 with DHCPv6 prefix-delegation (PD) - request your own /48 subnet from the init7 support.
+* IPv6 with DHCPv6 prefix-delegation (PD). __request your own /48 subnet from the init7 support__
 * Prefix-id: add the missing 16 bits to announce a /64 to your internal network. Needed for SLAAC (Stateless Address Autoconfiguration).
-
 
 ### Switch
 
-__ VLAN 1 __ Management network with range (192.168.0.0/24). 
+__VLAN 1__ Management network with range (192.168.0.0/24). 
 _yes, should be 192.168.1 - but was to lazy to change all my internal devices which already had a 192.168.1 network)_
 
-__ VLAN 2 __ Internal network: secure infrastructure (NAS, Laptop, Smartphone etc) Network: 192.168.1.0/24
+__VLAN  __ Internal network: secure infrastructure (NAS, Laptop, Smartphone etc) Network: 192.168.1.0/24
 
-__ VLAN 9 __ Guest VLAN: .. ;) Network: 192.168.2.0/24
+__VLAN 9__ Guest VLAN: .. ;) Network: 192.168.2.0/24
 
 Assign the VLANs to the interfaces. Using trunk ports on `eth0 - eth4`.
-`pvid`: default / native VLAN (if not set it's always VLAN 1) for the untagged traffic. Set the printer interface to the internal VLAN only.
-`vid`: all traffic from the APs and the Switch is expected tagged (VLAN2 or 9).
+
+* `pvid`: default / native VLAN (if not set it's always VLAN 1) for the untagged traffic. Set the printer interface to the internal VLAN only.
+* `vid`: all traffic from the APs and the Switch is expected tagged (VLAN2 or 9).
 
 ### VIF
 
