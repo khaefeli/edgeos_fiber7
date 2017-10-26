@@ -46,10 +46,15 @@ See *WANv6_LOCAL*
 ### Ethernet
 
 __eth 0__ Normal port configuration.
+
 __eth 1__ Normal port configuration.
+
 __eth 2__ Enable power-over-ethernet (PoE) for the Unifi access-point. 
+
 __eth 3__ Normal port configuration.
+
 __eth 4__ Enable power-over-ethernet (PoE) for the Unifi access-point.
+
 __eth 5__ WAN / Internet port with the SFP plugged. 
 
 * IPv4 over DHCP
@@ -61,14 +66,14 @@ __eth 5__ WAN / Internet port with the SFP plugged.
 __VLAN 1__ Management network with range (192.168.0.0/24). 
 _yes, should be 192.168.1 - but was to lazy to change all my internal devices which already had a 192.168.1 network)_
 
-__VLAN  __ Internal network: secure infrastructure (NAS, Laptop, Smartphone etc) Network: 192.168.1.0/24
+__VLAN 2__ Internal network: secure infrastructure (NAS, Laptop, Smartphone etc) Network: 192.168.1.0/24
 
 __VLAN 9__ Guest VLAN: .. ;) Network: 192.168.2.0/24
 
 Assign the VLANs to the interfaces. Using trunk ports on `eth0 - eth4`.
 
 * `pvid`: default / native VLAN (if not set it's always VLAN 1) for the untagged traffic. Set the printer interface to the internal VLAN only.
-* `vid`: all traffic from the APs and the Switch is expected tagged (VLAN2 or 9).
+* `vid`: all traffic from the APs and the Switch is expected tagged (VLAN 2 or 9).
 
 ### VIF
 
