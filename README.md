@@ -66,11 +66,14 @@ Notes:
 ### Switch
 
 __VLAN 1__ Management network with range (192.168.0.0/24). 
+
 _yes, should be 192.168.1 - but was to lazy to change all my internal devices which already had a 192.168.1 network)_
 
-__VLAN 2__ Internal network: secure infrastructure (NAS, Laptop, Smartphone etc) Network: 192.168.1.0/24
+__VLAN 2__ Internal network: secure infrastructure (NAS, :iphone: :tv: :computer: )
 
-__VLAN 9__ Guest VLAN: .. ;) Network: 192.168.2.0/24
+Network: 192.168.1.0/24
+
+__VLAN 9__ Guest VLAN: Network: 192.168.2.0/24
 
 Assign the VLANs to the interfaces. Using trunk ports on `eth0 - eth4`.
 
