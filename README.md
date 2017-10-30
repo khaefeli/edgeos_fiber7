@@ -4,7 +4,7 @@ Should also work with other ISPs supporting `DHCPv6 PD` and "bring-your-own-rout
 
 Optimized for 1Gbit WAN to LAN performance :rocket: Multiple VLANs to create a secure _#CHFreeWifi_ setup.
 
-:warning: *Warning*: dont copy/paste. It will enable power-over-ethernet and could break our network devices.
+:warning: *Warning*: dont copy/paste. It will enable power-over-ethernet and could break your network devices.
 
 ## Hardware
 
@@ -18,7 +18,7 @@ Optimized for 1Gbit WAN to LAN performance :rocket: Multiple VLANs to create a s
 
 Allow traffic from external (Internet) to the internal network. 
 Only accept established/related sessions for connections which have SYN/ACK.
-(started from our internal network)
+(started from your internal network)
 
 ### WANv6_LOCAL
 
@@ -28,9 +28,9 @@ Accept local connnections with the `icmpv6` protocol and allow internal DHCPv6 P
 
 Secure the networks between your VLANs (drop). But allow to access Unifi controller <> Unifi Devices and to the Router interfaces.
 
-__rule 10__ Accept `Router_IPs` of our gateway's. List should be specified under `adress-group Router_IPs`
+__rule 10__ Accept `Router_IPs` of your gateway's. List should be specified under `adress-group Router_IPs`
 
-__rule 15__ Static whitelist to our Unifi controller. Specify the Unifi devices IPs (Switch, Wifi etc) under `address-group unifi_devices`
+__rule 15__ Static whitelist to your Unifi controller. Specify the Unifi devices IPs (Switch, Wifi etc) under `address-group unifi_devices`
 
 __rule 16__ Opposite direction of the rule 15
 
